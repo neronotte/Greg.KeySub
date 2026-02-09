@@ -23,7 +23,14 @@ On many European keyboards (including Italian), the backtick character is diffic
 
 ### Option 1: Download Release
 
-Download the latest `Greg.KeySub.exe` from the [Releases](../../releases) page.
+Download the latest version from the [Releases](../../releases) page. Two versions are available:
+
+| File | Size | Requirements |
+|------|------|--------------|
+| `Greg.KeySub-SelfContained.exe` | ~49 MB | None - includes .NET runtime, runs on any Windows 10/11 |
+| `Greg.KeySub-FrameworkDependent.exe` | ~676 KB | Requires [.NET 10 Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) installed |
+
+**Recommended:** Use the **Self-Contained** version for maximum compatibility. Use the **Framework-Dependent** version if you already have .NET 10 installed and want a smaller download.
 
 ### Option 2: Build from Source
 
@@ -32,8 +39,11 @@ Download the latest `Greg.KeySub.exe` from the [Releases](../../releases) page.
 git clone https://github.com/yourusername/Greg.KeySub.git
 cd Greg.KeySub
 
-# Build and publish as single executable
+# Build self-contained (larger, no dependencies)
 dotnet publish src/Greg.KeySub -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish
+
+# Or build framework-dependent (smaller, requires .NET 10)
+dotnet publish src/Greg.KeySub -c Release -r win-x64 --no-self-contained -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=false -o ./publish
 ```
 
 ## Usage

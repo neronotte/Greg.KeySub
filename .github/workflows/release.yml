@@ -28,10 +28,21 @@ jobs:
       - name: Build
         run: dotnet build src/Greg.KeySub/Greg.KeySub.csproj --configuration Release --no-restore
 
-      - name: Publish
+      - name: Publish Self-Contained (with compression)
         run: |
           dotnet publish src/Greg.KeySub/Greg.KeySub.csproj -c Release -r win-x64 `
-            --self-contained -p:PublishSingleFile=true -o publish
+            --self-contained -p:PublishSingleFile=true -o publish/self-contained
+
+      - name: Publish Framework-Dependent
+        run: |
+          dotnet publish src/Greg.KeySub/Greg.KeySub.csproj -c Release -r win-x64 `
+            --no-self-contained -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=false -o publish/framework-dependent
+
+      - name: Rename executables
+        shell: pwsh
+        run: |
+          Rename-Item publish/self-contained/Greg.KeySub.exe Greg.KeySub-SelfContained.exe
+          Rename-Item publish/framework-dependent/Greg.KeySub.exe Greg.KeySub-FrameworkDependent.exe
 
       - name: Get version
         id: version
@@ -48,13 +59,21 @@ jobs:
           body: |
             Automated release of Greg.KeySub
 
+            ## Downloads
+
+            | File | Size | Requirements |
+            |------|------|--------------|
+            | `Greg.KeySub-SelfContained.exe` | ~49 MB | None (includes .NET runtime) |
+            | `Greg.KeySub-FrameworkDependent.exe` | ~676 KB | .NET 10 Runtime |
+
             ## Installation
-            Download `Greg.KeySub.exe` and run it.
+            Download the appropriate executable and run it.
 
             ## Changes
             Commit: ${{ github.sha }}
           files: |
-            publish/Greg.KeySub.exe
+            publish/self-contained/Greg.KeySub-SelfContained.exe
+            publish/framework-dependent/Greg.KeySub-FrameworkDependent.exe
           draft: false
           prerelease: false
         env:
