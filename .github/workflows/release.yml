@@ -23,14 +23,14 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore src\Greg.KeySub\Greg.KeySub.csproj
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build src\Greg.KeySub\Greg.KeySub.csproj --configuration Release --no-restore
 
       - name: Publish
         run: |
-          dotnet publish src\Greg.KeySub -c Release -r win-x64 `
+          dotnet publish src\Greg.KeySub\Greg.KeySub.csproj -c Release -r win-x64 `
             --self-contained -p:PublishSingleFile=true -o publish
 
       - name: Get version
